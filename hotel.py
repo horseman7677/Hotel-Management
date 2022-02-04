@@ -25,6 +25,40 @@ class Hotel:
         print("please wait...Searching Room🏠")
         print("Available Room...")
 
+        file = pl.Path("room.data")
+        if file.exists():
+            openFile = open("room.data","rb")
+            storeData = pickle.load(openFile)
+            openFile.close()
+            os.remove("room.data")
+
+            for key,val in storeData.items():
+                print('{} : {}'.format(key,val))
+
+            selRoom = int(input("Select Room Number : "))
+            if (storeData.get(selRoom)=="available"):
+                self.cRoomNumber = selRoom
+                storeData[selRoom] = "booked"
+
+                createFile = open("newRoom.data","wb")
+                pickle.dump(storeData,createFile)
+                createFile.close()
+                os.rename("newRoom.data","room.data")
+            else:
+                print("It's all ready booked...")
+                
+                for key,val in storeData.items():
+                    print('{} : {}'.format(key,val))
+
+                selRoom = int(input("Select another room : "))
+                if (storeData.get(selRoom)!="available"):
+                    self.cRoomNumber = selRoom
+                    storeData[selRoom] = "booked"
+
+                    createFile = open("newRoom.data","wb")
+                    pickle.dump(storeData,createFile)
+                    createFile.close()
+                    os.rename("newRoom.data","room.data")
 
 # creating object of class Hotel
 def createNewCustomer():
@@ -48,6 +82,7 @@ def displayAllCustomer():
             print('Customer Mob. Number: ', data.cNumber)
             print('customer Address : ', data.cAddress)
             print('Billing Type : ', data.cBilling)
+            print("Room Number : ",data.cRoomNumber)
             print()
         print('---------------------------------------------')
     else:
@@ -70,6 +105,16 @@ def createDB(customer):
     createFile.close()
     os.rename("newCustomer.data", "customers.data")
     print("Customer recorded....")
+
+def showRoom():
+    file = pl.Path("room.data")
+    if file.exists():
+        openFile = open("room.data","rb")
+        storeData = pickle.load(openFile)
+        openFile.close()
+
+        for key,val in storeData.items():
+            print('{} : {}'.format(key,val))
 
 # creating room
 def createRoom():
@@ -103,6 +148,7 @@ while c != '0':
     print('* : All customers List')
     print('0 : Exit')
     print('1 : New Customer')
+    print('2 : Available Room')
     print('---------------------------------------------')
     c = input('Choose option : ')
 
@@ -110,3 +156,5 @@ while c != '0':
         displayAllCustomer()
     elif c == '1':
         createNewCustomer()
+    elif c == '2':
+        showRoom()
